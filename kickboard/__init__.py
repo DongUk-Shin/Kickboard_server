@@ -1,4 +1,4 @@
-from flask import Flask, flash, redirect, render_template, request, url_for, session
+from flask import Flask, flash, redirect, render_template, request, url_for, session, jsonify
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -17,6 +17,7 @@ migrate.init_app(app, db)
 
 from .models import information
 
+
 @app.route('/')
 def default():
     return redirect('/main')
@@ -29,6 +30,14 @@ def main():
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
+        """
+        json_data = request.get_json()
+        user_id = json_data['user_id']
+        password = json_data['password']
+        name = json_data['name']
+        birth = json_data['birth']
+        call = json_data['call']
+        """
         user_id = request.form['user_id']
         password = request.form['password']
         name = request.form['name']
@@ -36,7 +45,6 @@ def signup():
         call = request.form['call']
 
         hashed_password = generate_password_hash(password)  # 비밀번호 해싱
-
         user = information(user_id=user_id, password=hashed_password, name=name, birth=birth, call=call)
 
         db.session.add(user)
@@ -64,6 +72,49 @@ def logout():
     session.clear()
     return redirect(url_for('main'))
 
+#DB 표시
+@app.route('/dataview/')
+def dataview():
+    data = information.query.all()
+    return render_template('dataview.html', data=data)
+    
+"""
+#POST 요청으로 json 받아서 user 객체 생성
+@app.route('/jsontest/', methods=['POST'])
+def jsontest():
+    if request.method == 'POST':
+        data = request.get_json()
+
+        user_id = data.get('user_id')
+        password = data.get('password')
+        name = data.get('name')
+        birth = data.get('birth')
+        call = data.get('call')
+
+        hashed_password = generate_password_hash(password)
+        user = information(user_id=user_id, password=hashed_password, name=name, birth=birth, call=call)
+        db.session.add(user)
+        db.session.commit()
+        return "성공"
+
+
+@app.route('/jsontest1/', methods=['GET'])
+def jsontest1():
+    if request.method == 'GET':
+        data = request.get_json()
+
+
+        user_info_json = jsonify(
+            user_id=user.user_id,
+            password=user.password,
+            name=user.name,
+            birth=user.birth,
+            call=user.call
+        )
+        
+        return user_info_json
+    
+"""
 
 if __name__ == '__main__':
     #app.run(host="220.69.208.119", port=8000, debug=True)
