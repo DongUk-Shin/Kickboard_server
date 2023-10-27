@@ -23,15 +23,23 @@ def signup():
 
         email = request.form['email']
         password = request.form['password']
+        confirm_password = request.form['confirm_password']
         name = request.form['name']
         phone_number = request.form['phone_number']
 
+        existing_user = information.query.filter_by(email=email).first()
+        if existing_user:
+            return "아이디가 이미 존재합니다", 202
+
+        if password != confirm_password:
+            return "비밀번호가 일치하지 않습니다", 203
+        
         hashed_password = generate_password_hash(password)  # 비밀번호 해싱
         user = information(email=email, password=hashed_password, name=name, phone_number=phone_number)
 
         db.session.add(user)
         db.session.commit()
-        return redirect(url_for('html_views.main'))
+        return redirect(url_for('html_views.main')) ,201
 
     return render_template('signup.html')
 
