@@ -2,6 +2,16 @@
 <html>
 <body>
     <h1>메인 화면</h1>
-    <a href="/signup">회원가입</a>
+
+    {% if session_id %}
+        <p>현재 로그인한 사용자: {{ session_id }}</p>
+        <a href="/logout">로그아웃<br></a>
+    {% else %}
+        <p>로그인 안 되어있음</p>
+    {% endif %}
+    <a href="/signup">회원가입<br></a>
+    <a href="/signin">로그인<br></a>
+    <a href="/dataview">DB보기<br></a>
+
 </body>
 </html>

@@ -7,3 +7,4 @@ class information(db.Model):
     name = db.Column(db.Text)
     birth = db.Column(db.Text)
     call = db.Column(db.Text)
+    
