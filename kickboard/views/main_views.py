@@ -4,7 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from kickboard import db
 from kickboard.models import information
 
-bp = Blueprint('main', __name__, url_prefix='/')
+bp = Blueprint('main_views', __name__, url_prefix='/')
 
 #POST 요청으로 json 받아서 user 객체 생성
 @bp.route('/jsontest/', methods=['POST'])
@@ -12,14 +12,13 @@ def jsontest():
     if request.method == 'POST':
         data = request.get_json()
 
-        user_id = data.get('user_id')
+        email = data.get('email')
         password = data.get('password')
         name = data.get('name')
-        birth = data.get('birth')
-        call = data.get('call')
+        phone_number = data.get('phone_number')
 
         hashed_password = generate_password_hash(password)
-        user = information(user_id=user_id, password=hashed_password, name=name, birth=birth, call=call)
+        user = information(email=email, password=hashed_password, name=name, phone_number=phone_number)
         db.session.add(user)
         db.session.commit()
         return "성공"
