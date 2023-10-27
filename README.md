@@ -12,4 +12,5 @@ Flask-SQLAlchemy
 Flask-Login
 Flask-Session
 
-
+main_views: 안드로이드 스튜디오와 통신할 URL 
+html_views: 테스트용 웹페이지
