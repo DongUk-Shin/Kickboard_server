@@ -1,8 +1,11 @@
-from flask import Blueprint
+from flask import Blueprint, current_app
 from flask import redirect, render_template, request, url_for, session, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.utils import secure_filename
 from kickboard import db
 from kickboard.models import information
+
+import os
 
 bp = Blueprint('html_views', __name__, url_prefix='/')
 
@@ -68,3 +71,22 @@ def logout():
 def dataview():
     data = information.query.all()
     return render_template('dataview.html', data=data)
+
+# 이미지 받기
+@bp.route('/image', methods=['Get', 'POST'])
+def getImage():
+        if request.method == 'POST':
+
+            if 'image_file' not in request.files:
+                return 'File is missing', 404
+            
+            image_file = request.files['image_file']
+            
+            if image_file.filename == '':
+                return 'File is missing', 404
+            
+            filename = secure_filename(image_file.filename)
+            image_file.save(os.path.join(current_app.config['UPLOAD_FOLDER'],filename))
+
+            return redirect(url_for('html_views.main'))
+        return render_template('send2image.html')
