@@ -1,8 +1,11 @@
-from flask import Blueprint
+from flask import Blueprint, current_app
 from flask import redirect, render_template, request, url_for, session, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.utils import secure_filename
 from kickboard import db
 from kickboard.models import information
+
+import os
 
 bp = Blueprint('main_views', __name__, url_prefix='/')
 
@@ -56,4 +59,22 @@ def signin1():
             return "로그인 성공", 200
         else:
             return "비밀번호가 일치하지 않습니다" ,401
+
+
+#테스트가 안된 코드
+@bp.route('/image1/', methods=['POST'])
+def getImage1():
+        if request.method == 'POST':
+            if 'image_file' not in request.files:
+                return 'File is missing', 404
+            
+            image_file = request.files['image_file']
+            
+            if image_file.filename == '':
+                return 'File is missing', 404
+            
+            filename = secure_filename(image_file.filename)
+            image_file.save(os.path.join(current_app.config['UPLOAD_FOLDER'],filename))
+
+            return "이미지 파일 전송 성공", 200
         
