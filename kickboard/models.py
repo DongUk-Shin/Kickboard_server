@@ -12,3 +12,4 @@ class RideLog(db.Model):
     distance = db.Column(db.Text)
     runtime = db.Column(db.Text)
     cost = db.Column(db.Text)
+    
