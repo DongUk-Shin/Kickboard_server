@@ -82,7 +82,7 @@ def getImage():
 
 import io
 import os
-from torchvision import models  
+from torchvision import models
 from PIL import Image as im
 import torch.nn as nn
 from torchvision import transforms
