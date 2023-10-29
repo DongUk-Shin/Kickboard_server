@@ -10,13 +10,12 @@ import os
 bp = Blueprint('main_views', __name__, url_prefix='/')
 
 #POST 요청으로 json 받아서 user 객체 생성
-@bp.route('/signup1/', methods=['POST'])
-def signup1():
+@bp.route('signup/', methods=['POST'])
+def signup():
     if request.method == 'POST':
         data = request.get_json() #json 데이터 받아옴
-
         if not data: 
-            return jsonify({'error': '데이터가 올바르지 않습니다'}), 400
+            return "데이터가 올바르지 않습니다", 400
 
         email = data.get('email')
         password = data.get('password')
@@ -40,30 +39,33 @@ def signup1():
 
 
 
-@bp.route('/signin1/', methods=['POST'])
-def signin1():
+@bp.route('signin/', methods=['POST'])
+def signin():
     if request.method == 'POST':
         data = request.get_json()
 
         if not data: 
-            return jsonify({'error': '데이터가 올바르지 않습니다'}), 400
+            return "데이터가 올바르지 않습니다", 400
 
         email = data.get('email')
         password = data.get('password')
         
         user = information.query.filter_by(email=email).first()
+        
 
         if user and check_password_hash(user.password, password):
             session.clear()
+            name = user.name
             session['session_user'] = user.email #세션에 id 저장
-            return "로그인 성공", 200
+            
+            return name, 200
         else:
             return "비밀번호가 일치하지 않습니다" ,401
 
 
 #테스트가 안된 코드
-@bp.route('/image1/', methods=['POST'])
-def getImage1():
+@bp.route('image/', methods=['POST'])
+def getImage():
         if request.method == 'POST':
             if 'image_file' not in request.files:
                 return 'File is missing', 404
@@ -77,4 +79,3 @@ def getImage1():
             image_file.save(os.path.join(current_app.config['UPLOAD_FOLDER'],filename))
 
             return "이미지 파일 전송 성공", 200
-        

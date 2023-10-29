@@ -15,13 +15,13 @@ bp = Blueprint('html_views', __name__, url_prefix='/')
 def default():
     return redirect('/main')
 
-@bp.route('/main')
+@bp.route('/main/')
 def main():
     session_id = session.get('session_user')
     return render_template("main.html", session_id=session_id)
 
-@bp.route('/signup', methods=['GET', 'POST'])
-def signup():
+@bp.route('signupTest/', methods=['GET', 'POST'])
+def signupTest():
     if request.method == 'POST':
 
         email = request.form['email']
@@ -42,13 +42,13 @@ def signup():
 
         db.session.add(user)
         db.session.commit()
-        return redirect(url_for('html_views.main')) ,201
+        return redirect(url_for('html_views.main'))
 
     return render_template('signup.html')
 
 
-@bp.route('/signin', methods=['GET', 'POST'])
-def signin():
+@bp.route('signinTest/', methods=['GET', 'POST'])
+def signinTest():
     if request.method == 'POST':
         emain_input = request.form['email_input']
         password_input = request.form['password_input']
@@ -61,20 +61,20 @@ def signin():
         
     return render_template('signin.html')
 
-@bp.route('/logout/')
-def logout():
+@bp.route('logoutTest/')
+def logoutTest():
     session.clear()
     return redirect(url_for('html_views.main'))
 
 #DB 표시
-@bp.route('/dataview/')
-def dataview():
+@bp.route('dataviewTest/')
+def dataviewTest():
     data = information.query.all()
     return render_template('dataview.html', data=data)
 
 # 이미지 받기
-@bp.route('/image', methods=['Get', 'POST'])
-def getImage():
+@bp.route('imageTest/', methods=['Get', 'POST'])
+def getImageTest():
         if request.method == 'POST':
 
             if 'image_file' not in request.files:
