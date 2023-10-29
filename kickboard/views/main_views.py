@@ -87,21 +87,29 @@ from PIL import Image as im
 import torch.nn as nn
 from torchvision import transforms
 import torch
+from PIL import Image
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 FILES_DIR = os.path.abspath(os.path.join(BASE_DIR, 'yolov5'))
 model = torch.hub.load(FILES_DIR, 'custom', path=FILES_DIR+'/runs/train/exp4/weights/best.pt', source='local')
 
+#헬멧 이미지 POST, 헬멧 결과 출력
+#디버깅 모드 활성화 할 것, 리드미 확인
+@bp.route('image11/', methods=['POST'])
+def yolo():
+    if request.method == 'POST':
+        image = request.files['imageFile']
+        im_bytes = image.read()
+        im = Image.open(io.BytesIO(im_bytes))
 
-def yolo(request):
-    image = request.FILES.get('imageFile')
-    img_instance = myObjects(image=image)
-    img_instance.save()
-    uploaded_img_qs = myObjects.objects.filter().last()
-    img_bytes = uploaded_img_qs.image.read()
-    img = im.open(io.BytesIO(img_bytes))
-    result = model(img)
-    print(result)
-    for detection in result:
-        class_id, score, bbox = detection
-        print(f"Class ID: {class_id}, Score: {score}, Bounding Box: {bbox}")
+        result = model(im)
+        
+        print(result)
+        """
+        class_id, score, bbox = result
+        print(f"Class ID: {class_id}, Score: {score}, Bounding Box: {bbox}")"""
+        
+        return '헬멧 감지 성공', 201
+    return '헬멧 감지 실패', 405
+    
+

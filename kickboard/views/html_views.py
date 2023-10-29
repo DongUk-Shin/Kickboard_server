@@ -71,22 +71,3 @@ def logoutTest():
 def dataviewTest():
     data = information.query.all()
     return render_template('dataview.html', data=data)
-
-# 이미지 받기
-@bp.route('imageTest/', methods=['Get', 'POST'])
-def getImageTest():
-        if request.method == 'POST':
-
-            if 'image_file' not in request.files:
-                return 'File is missing', 404
-            
-            image_file = request.files['image_file']
-            
-            if image_file.filename == '':
-                return 'File is missing', 404
-            
-            filename = secure_filename(image_file.filename)
-            image_file.save(os.path.join(current_app.config['UPLOAD_FOLDER'],filename))
-
-            return redirect(url_for('html_views.main'))
-        return render_template('send2image.html')

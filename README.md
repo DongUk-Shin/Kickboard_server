@@ -17,3 +17,6 @@ html_views: 테스트용 웹페이지
 
 서버 컴퓨터(동욱컴) 실행 명령
 flask run --host=220.69.208.119 --port=8000
+
+디버깅 모드(print 출력 가능하게 함)
+set FLASK_DEBUG=true
