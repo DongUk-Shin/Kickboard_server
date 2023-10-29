@@ -3,7 +3,7 @@ from flask import redirect, render_template, request, url_for, session, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 from kickboard import db
-from kickboard.models import information
+from kickboard.models import information, RideLog
 
 import os
 
@@ -80,6 +80,28 @@ def getImage():
 
             return "이미지 파일 전송 성공", 200
 
+#운행 기록 받아서 서버에 저장
+@bp.route('saveriderog/', methods=['POST'])
+def saveRideRog():
+    if request.method == 'POST':
+        data = request.get_json()
+
+        if not data: 
+            return "데이터가 올바르지 않습니다", 400
+
+        email = data.get('email')
+        date = data.get('date')
+        distance = data.get('distance')
+        runtime = data.get('runtime')
+        cost = data.get('cost')
+
+        user = RideLog(email=email, date=date, distance=distance, runtime=runtime, cost=cost)
+        db.session.add(user)
+        db.session.commit()
+
+        return "서버 저장 성공" , 201
+
+
 import io
 import os
 from torchvision import models
@@ -95,7 +117,7 @@ model = torch.hub.load(FILES_DIR, 'custom', path=FILES_DIR+'/runs/train/exp4/wei
 
 #헬멧 이미지 POST, 헬멧 결과 출력
 #디버깅 모드 활성화 할 것, 리드미 확인
-@bp.route('image11/', methods=['POST'])
+@bp.route('checkHelmet/', methods=['POST'])
 def yolo():
     if request.method == 'POST':
         image = request.files['imageFile']
@@ -110,6 +132,7 @@ def yolo():
         print(f"Class ID: {class_id}, Score: {score}, Bounding Box: {bbox}")"""
         
         return '헬멧 감지 성공', 201
-    return '헬멧 감지 실패', 405
+    return '헬멧 감지 실패', 404
     
+
 
