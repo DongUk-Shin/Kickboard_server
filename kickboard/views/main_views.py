@@ -79,3 +79,29 @@ def getImage():
             image_file.save(os.path.join(current_app.config['UPLOAD_FOLDER'],filename))
 
             return "이미지 파일 전송 성공", 200
+
+import io
+import os
+from torchvision import models  
+from PIL import Image as im
+import torch.nn as nn
+from torchvision import transforms
+import torch
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+FILES_DIR = os.path.abspath(os.path.join(BASE_DIR, 'yolov5'))
+model = torch.hub.load(FILES_DIR, 'custom', path=FILES_DIR+'/runs/train/exp4/weights/best.pt', source='local')
+
+
+def yolo(request):
+    image = request.FILES.get('imageFile')
+    img_instance = myObjects(image=image)
+    img_instance.save()
+    uploaded_img_qs = myObjects.objects.filter().last()
+    img_bytes = uploaded_img_qs.image.read()
+    img = im.open(io.BytesIO(img_bytes))
+    result = model(img)
+    print(result)
+    for detection in result:
+        class_id, score, bbox = detection
+        print(f"Class ID: {class_id}, Score: {score}, Bounding Box: {bbox}")
