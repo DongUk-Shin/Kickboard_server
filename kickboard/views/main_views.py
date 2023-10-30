@@ -8,6 +8,7 @@ from kickboard.models import information, RideLog
 import os
 
 bp = Blueprint('main_views', __name__, url_prefix='/')
+initial_start_data = {"start":"X"}
 
 #POST 요청으로 json 받아서 user 객체 생성
 @bp.route('signup/', methods=['POST'])
@@ -107,17 +108,14 @@ def start():
 
     if 'start' in data:
         if data['start'] == 'Start':
-            data['start'] = 'O'
-            return jsonify(data), 201
+            initial_start_data['start'] = 'O'
+            return jsonify(initial_start_data), 201
         elif data['start'] == 'Off':
-            data['start'] = 'X'
-            return jsonify(data), 202
+            initial_start_data['start'] = 'X'
+            return jsonify(initial_start_data), 202
         else:
-            return jsonify(data), 203
+            return jsonify(initial_start_data), 203
     return "start가 안옴", 404
-
-
-
 
 import io
 import os
@@ -153,4 +151,3 @@ def yolo():
             return "헬멧만 있음", 202
 
     return '헬멧 감지 실패', 404
-    
