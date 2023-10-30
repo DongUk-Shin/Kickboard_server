@@ -97,7 +97,7 @@ def getImage():
 def saveRideRogTest():
     if request.method == 'POST':
 
-        email = request.form['email_input']
+        email = session['session_user']
         date = request.form['date_input']
         distance = request.form['distance_input']
         runtime = request.form['runtime_input']
@@ -108,5 +108,5 @@ def saveRideRogTest():
         db.session.commit()
 
         return redirect(url_for('html_views.main'))
-    return render_template('saveriderog.html')
+    return render_template('saveriderog.html', email=email)
 
