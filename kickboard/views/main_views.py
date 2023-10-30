@@ -101,6 +101,21 @@ def saveRideRog():
 
         return "서버 저장 성공" , 201
 
+@bp.route('start/', methods=['POST'])
+def start():
+    data = request.get_json()
+
+    if 'start' in data:
+        if data['start'] == 'Start':
+            data['start'] = 'O'
+            return jsonify(data), 201
+        elif data['start'] == 'Off':
+            data['start'] = 'X'
+            return jsonify(data), 202
+        else:
+            return jsonify(data)
+
+
 
 import io
 import os
@@ -129,7 +144,8 @@ def yolo():
         print(result)
         """
         class_id, score, bbox = result
-        print(f"Class ID: {class_id}, Score: {score}, Bounding Box: {bbox}")"""
+        print(f"Class ID: {class_id}, Score: {score}, Bounding Box: {bbox}")
+        """
         
         return '헬멧 감지 성공', 201
     return '헬멧 감지 실패', 404
