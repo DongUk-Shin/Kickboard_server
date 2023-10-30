@@ -3,7 +3,7 @@ from flask import redirect, render_template, request, url_for, session, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 from kickboard import db
-from kickboard.models import information
+from kickboard.models import information, RideLog
 
 import os
 
@@ -69,5 +69,44 @@ def logoutTest():
 #DB 표시
 @bp.route('dataviewTest/')
 def dataviewTest():
-    data = information.query.all()
-    return render_template('dataview.html', data=data)
+    info = information.query.all()
+    ridelog = RideLog.query.all()
+    return render_template('dataview.html', info=info, ridelog=ridelog)
+
+# 이미지 받기
+@bp.route('imageTest/', methods=['GET', 'POST'])
+def getImage():
+    if request.method == 'POST':
+
+        if 'image_file' not in request.files:
+            return 'File is missing', 404
+
+        image_file = request.files['image_file']
+
+        if image_file.filename == '':
+            return 'File is missing', 404
+
+        filename = secure_filename(image_file.filename)
+        image_file.save(os.path.join(current_app.config['UPLOAD_FOLDER'],filename))
+
+        return redirect(url_for('html_views.main'))
+    return render_template('send2image.html')
+
+#운행 기록 받아서 서버에 저장
+@bp.route('saveriderogTest/', methods=['GET', 'POST'])
+def saveRideRogTest():
+    if request.method == 'POST':
+
+        email = request.form['email_input']
+        date = request.form['date_input']
+        distance = request.form['distance_input']
+        runtime = request.form['runtime_input']
+        cost = request.form['cost_input']
+
+        user = RideLog(email=email, date=date, distance=distance, runtime=runtime, cost=cost)
+        db.session.add(user)
+        db.session.commit()
+
+        return redirect(url_for('html_views.main'))
+    return render_template('saveriderog.html')
+

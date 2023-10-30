@@ -20,3 +20,8 @@ flask run --host=220.69.208.119 --port=8000
 
 디버깅 모드(print 출력 가능하게 함)
 set FLASK_DEBUG=true
+
+
+서버 모델 변경 시
+flask db migrate
+flask db upgrade
