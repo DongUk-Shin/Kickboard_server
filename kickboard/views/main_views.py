@@ -113,7 +113,9 @@ def start():
             data['start'] = 'X'
             return jsonify(data), 202
         else:
-            return jsonify(data)
+            return jsonify(data), 203
+    return "start가 안옴", 404
+
 
 
 
@@ -142,15 +144,13 @@ def yolo():
         result = model(im)
         
         print(result)
-        """
-        class_id, score, bbox = result
-        print(f"Class ID: {class_id}, Score: {score}, Bounding Box: {bbox}")
-        """
         
-        return '헬멧 감지 성공', 201
+        
+        if "HelmetFace" in str(result):
+            return "헬멧 감지 성공", 201
+        
+        if "onlyHelmet" in str(result):
+            return "헬멧만 있음", 202
+
     return '헬멧 감지 실패', 404
     
-    
-
-
-
