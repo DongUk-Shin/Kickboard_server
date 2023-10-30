@@ -69,11 +69,12 @@ def logoutTest():
 #DB 표시
 @bp.route('dataviewTest/')
 def dataviewTest():
-    data = information.query.all()
-    return render_template('dataview.html', data=data)
+    info = information.query.all()
+    ridelog = RideLog.query.all()
+    return render_template('dataview.html', info=info, ridelog=ridelog)
 
 # 이미지 받기
-@bp.route('imageTest/', methods=['Get', 'POST'])
+@bp.route('imageTest/', methods=['GET', 'POST'])
 def getImage():
     if request.method == 'POST':
 
