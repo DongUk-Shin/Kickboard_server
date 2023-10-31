@@ -38,6 +38,8 @@ def signup():
 
         return "회원가입이 성공적으로 완료되었습니다", 201
 
+
+#json 받아서 비밀번호 검증 후 로그인 return
 @bp.route('signin/', methods=['POST'])
 def signin():
     if request.method == 'POST':
@@ -116,50 +118,38 @@ def start():
             return initial_start_data['start'], 203
     return "start가 안옴", 404
 
-#사고 기록 받아서 서버에 저장
-@bp.route('saveraccident/', methods=['POST'])
-def saveAccident():
+
+#개인정보 페이지 개인정보return
+@bp.route('userinfo/', methods=['POST'])
+def userinfo():
     if request.method == 'POST':
-        accident_data = request.get_json()
+            # 현재 로그인한 사용자의 이메일 가져오기
+            # html.views.py에서 생성한 세션은 인식하지 못하는 이슈가 있음
+            # main.views.py의 singin/ 에서는 정상 동작
+            user_email = session.get('session_user')  
+            user_info = information.query.filter_by(email=user_email).first() 
+            user_log = RideLog.query.filter_by(email=user_email).first()  
+            if user_info and user_log:  
+                user_data = {
+                    'email': user_info.email,
+                    'name': user_info.name,
+                    'phone_number': user_info.phone_number,
+                    'date': user_log.date,
+                    'distance': user_log.distance,
+                    'runtime': user_log.runtime,
+                    'cost': user_log.cost,
+                }
 
-        if not accident_data: 
-            return "데이터가 올바르지 않습니다", 400
+                return jsonify(user_data), 200
+            else:
+                return "사용자 정보를 찾을 수 없습니다.", 404
 
-        date =  accident_data.get('date')
-        latitude =  accident_data.get('latitude')
-        longitude =  accident_data.get('longitude')
+    return "잘못된 요청 메서드", 405
 
-        accident = Accident(date=date, latitude=latitude, longitude=longitude)
-        db.session.add(accident)
-        db.session.commit()
 
-        return "서버 저장 성공" , 201
 
-#id 값을 기준으로 사고 기록 반환
-@bp.route('sendaccident/', methods=['POST'])
-def sendAccident():
-    if request.method == 'POST':
-        data = request.get_json()
 
-        if not data: 
-            return "데이터가 올바르지 않습니다", 400
-        
-        id = data.get('id')
-
-        accident = Accident.query.get(id)
-
-        if accident:
-            accident_data = {
-                'id':accident.id,
-                'date':accident.date,
-                'latitude':accident.latitude,
-                'longitude':accident.longitude
-            }
-            return jsonify(accident_data)
-        else:
-            return "해당 id의 Accident가 존재하지 않음", 400
-
-import io
+"""import io
 import os
 from torchvision import models
 from PIL import Image as im
@@ -192,4 +182,4 @@ def yolo():
         if "onlyHelmet" in str(result):
             return "헬멧만 있음", 202
 
-    return '헬멧 감지 실패', 404
+    return '헬멧 감지 실패', 404"""
