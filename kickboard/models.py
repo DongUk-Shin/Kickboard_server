@@ -21,5 +21,6 @@ class Accident(db.Model):
     date = db.Column(db.Text)
     latitude = db.Column(db.Float) #위도
     longitude = db.Column(db.Float) #경도.
+    count = db.Column(db.Integer)
     
 

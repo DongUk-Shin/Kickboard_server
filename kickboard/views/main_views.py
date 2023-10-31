@@ -160,8 +160,9 @@ def saveAccident():
         date =  accident_data.get('date')
         latitude =  accident_data.get('latitude')
         longitude =  accident_data.get('longitude')
+        count = accident_data.get('count')
 
-        accident = Accident(date=date, latitude=latitude, longitude=longitude)
+        accident = Accident(date=date, latitude=latitude, longitude=longitude, count=count)
         db.session.add(accident)
         db.session.commit()
 
@@ -174,7 +175,7 @@ def sendAccident():
     accidents = Accident.query.all()
 
     for accident in accidents:
-        result += f"{accident.id} {accident.date} {accident.latitude} {accident.longitude}"
+        result += f"{accident.id} {accident.date} {accident.latitude} {accident.longitude} {accident.count}"
 
     return result
 
