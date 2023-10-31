@@ -3,7 +3,7 @@ from flask import redirect, render_template, request, url_for, session, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 from kickboard import db
-from kickboard.models import information, RideLog
+from kickboard.models import information, RideLog, Accident
 
 import os
 
@@ -134,3 +134,19 @@ def userinfoTest():
             return "유저 정보 로드 실패", 406
     else:
         return "유저 정보 로드 실패", 405
+
+#사고 기록 받아서 서버에 저장
+@bp.route('saveaccidentTest/', methods=['GET', 'POST'])
+def saveAccidentTest():
+    if request.method == 'POST':
+
+        date = request.form['date_input']
+        latitude = request.form['latitude_input']
+        longitude = request.form['longitude_input']
+
+        accident_data = Accident(date=date, latitude=latitude, longitude=longitude)
+        db.session.add(accident_data)
+        db.session.commit()
+
+        return redirect(url_for('html_views.main'))
+    return render_template('saveaccident.html')
