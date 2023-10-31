@@ -115,7 +115,10 @@ def start():
             initial_start_data['start'] = 'X'
             return 'X', 202
         else:
-            return initial_start_data['start'], 203
+            if initial_start_data['start'] == 'O':
+                return 'O', 201
+            else:
+                return 'X', 202
     return "start가 안옴", 404
 
 #개인정보 페이지 개인정보return
@@ -164,29 +167,16 @@ def saveAccident():
 
         return "서버 저장 성공" , 201
 
-#id 값을 기준으로 사고 기록 반환
+#전체 사고 기록 반환
 @bp.route('sendaccident/', methods=['POST'])
 def sendAccident():
-    if request.method == 'POST':
-        data = request.get_json()
+    result = ""
+    accidents = Accident.query.all()
 
-        if not data: 
-            return "데이터가 올바르지 않습니다", 400
-        
-        id = data.get('id')
+    for accident in accidents:
+        result += f"{accident.id} {accident.date} {accident.latitude} {accident.longitude}"
 
-        accident = Accident.query.get(id)
-
-        if accident:
-            accident_data = {
-                'id':accident.id,
-                'date':accident.date,
-                'latitude':accident.latitude,
-                'longitude':accident.longitude
-            }
-            return jsonify(accident_data)
-        else:
-            return "해당 id의 Accident가 존재하지 않음", 400
+    return result
 
 """import io
 import os
