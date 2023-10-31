@@ -3,7 +3,7 @@ from flask import redirect, render_template, request, url_for, session, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 from kickboard import db
-from kickboard.models import information, RideLog
+from kickboard.models import information, RideLog, Accident
 
 import os
 
@@ -110,3 +110,17 @@ def saveRideRogTest():
         return redirect(url_for('html_views.main'))
     return render_template('saveriderog.html', email=email)
 
+@bp.route('saveaccidentTest/', methods=['GET', 'POST'])
+def saveAccidentTest():
+    if request.method == 'POST':
+
+        date = request.form['date_input']
+        latitude = request.form['latitude_input']
+        longitude = request.form['longitude_input']
+
+        accident_data = Accident(date=date, latitude=latitude, longitude=longitude)
+        db.session.add(accident_data)
+        db.session.commit()
+
+        return redirect(url_for('html_views.main'))
+    return render_template('saveaccident.html')

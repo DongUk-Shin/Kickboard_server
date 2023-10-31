@@ -3,7 +3,7 @@ from flask import redirect, render_template, request, url_for, session, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 from kickboard import db
-from kickboard.models import information, RideLog
+from kickboard.models import information, RideLog, Accident
 
 import os
 
@@ -38,8 +38,6 @@ def signup():
 
         return "회원가입이 성공적으로 완료되었습니다", 201
 
-
-
 @bp.route('signin/', methods=['POST'])
 def signin():
     if request.method == 'POST':
@@ -64,7 +62,7 @@ def signin():
             return "비밀번호가 일치하지 않습니다" ,401
 
 
-#테스트가 안된 코드
+# 이미지를 폴더에 저장(아직은 사용X)
 @bp.route('image/', methods=['POST'])
 def getImage():
         if request.method == 'POST':
@@ -102,6 +100,7 @@ def saveRideRog():
 
         return "서버 저장 성공" , 201
 
+#시동걸기
 @bp.route('start/', methods=['POST'])
 def start():
     data = request.get_json()
@@ -109,13 +108,56 @@ def start():
     if 'start' in data:
         if data['start'] == 'Start':
             initial_start_data['start'] = 'O'
-            return jsonify(initial_start_data), 201
+            return 'O', 201
         elif data['start'] == 'Off':
             initial_start_data['start'] = 'X'
-            return jsonify(initial_start_data), 202
+            return 'X', 202
         else:
-            return jsonify(initial_start_data), 203
+            return initial_start_data['start'], 203
     return "start가 안옴", 404
+
+#사고 기록 받아서 서버에 저장
+@bp.route('saveraccident/', methods=['POST'])
+def saveAccident():
+    if request.method == 'POST':
+        accident_data = request.get_json()
+
+        if not accident_data: 
+            return "데이터가 올바르지 않습니다", 400
+
+        date =  accident_data.get('date')
+        latitude =  accident_data.get('latitude')
+        longitude =  accident_data.get('longitude')
+
+        accident = Accident(date=date, latitude=latitude, longitude=longitude)
+        db.session.add(accident)
+        db.session.commit()
+
+        return "서버 저장 성공" , 201
+
+#id 값을 기준으로 사고 기록 반환
+@bp.route('sendaccident/', methods=['POST'])
+def sendAccident():
+    if request.method == 'POST':
+        data = request.get_json()
+
+        if not data: 
+            return "데이터가 올바르지 않습니다", 400
+        
+        id = data.get('id')
+
+        accident = Accident.query.get(id)
+
+        if accident:
+            accident_data = {
+                'id':accident.id,
+                'date':accident.date,
+                'latitude':accident.latitude,
+                'longitude':accident.longitude
+            }
+            return jsonify(accident_data)
+        else:
+            return "해당 id의 Accident가 존재하지 않음", 400
 
 import io
 import os
