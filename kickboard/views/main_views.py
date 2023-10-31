@@ -118,7 +118,6 @@ def start():
             return initial_start_data['start'], 203
     return "start가 안옴", 404
 
-
 #개인정보 페이지 개인정보return
 @bp.route('userinfo/', methods=['POST'])
 def userinfo():
@@ -146,8 +145,48 @@ def userinfo():
 
     return "잘못된 요청 메서드", 405
 
+#사고 기록 받아서 서버에 저장
+@bp.route('saveraccident/', methods=['POST'])
+def saveAccident():
+    if request.method == 'POST':
+        accident_data = request.get_json()
 
+        if not accident_data: 
+            return "데이터가 올바르지 않습니다", 400
 
+        date =  accident_data.get('date')
+        latitude =  accident_data.get('latitude')
+        longitude =  accident_data.get('longitude')
+
+        accident = Accident(date=date, latitude=latitude, longitude=longitude)
+        db.session.add(accident)
+        db.session.commit()
+
+        return "서버 저장 성공" , 201
+
+#id 값을 기준으로 사고 기록 반환
+@bp.route('sendaccident/', methods=['POST'])
+def sendAccident():
+    if request.method == 'POST':
+        data = request.get_json()
+
+        if not data: 
+            return "데이터가 올바르지 않습니다", 400
+        
+        id = data.get('id')
+
+        accident = Accident.query.get(id)
+
+        if accident:
+            accident_data = {
+                'id':accident.id,
+                'date':accident.date,
+                'latitude':accident.latitude,
+                'longitude':accident.longitude
+            }
+            return jsonify(accident_data)
+        else:
+            return "해당 id의 Accident가 존재하지 않음", 400
 
 """import io
 import os
