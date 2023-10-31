@@ -143,8 +143,9 @@ def saveAccidentTest():
         date = request.form['date_input']
         latitude = request.form['latitude_input']
         longitude = request.form['longitude_input']
+        count = request.form['count_input']
 
-        accident_data = Accident(date=date, latitude=latitude, longitude=longitude)
+        accident_data = Accident(date=date, latitude=latitude, longitude=longitude, count=count)
         db.session.add(accident_data)
         db.session.commit()
 
