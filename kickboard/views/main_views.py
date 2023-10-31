@@ -39,7 +39,7 @@ def signup():
         return "회원가입이 성공적으로 완료되었습니다", 201
 
 
-
+#json 받아서 비밀번호 검증 후 로그인 return
 @bp.route('signin/', methods=['POST'])
 def signin():
     if request.method == 'POST':
@@ -117,7 +117,38 @@ def start():
             return jsonify(initial_start_data), 203
     return "start가 안옴", 404
 
-import io
+
+#개인정보 페이지 개인정보return
+@bp.route('userinfo/', methods=['POST'])
+def userinfo():
+    if request.method == 'POST':
+            # 현재 로그인한 사용자의 이메일 가져오기
+            # html.views.py에서 생성한 세션은 인식하지 못하는 이슈가 있음
+            # main.views.py의 singin/ 에서는 정상 동작
+            user_email = session.get('session_user')  
+            user_info = information.query.filter_by(email=user_email).first() 
+            user_log = RideLog.query.filter_by(email=user_email).first()  
+            if user_info and user_log:  
+                user_data = {
+                    'email': user_info.email,
+                    'name': user_info.name,
+                    'phone_number': user_info.phone_number,
+                    'date': user_log.date,
+                    'distance': user_log.distance,
+                    'runtime': user_log.runtime,
+                    'cost': user_log.cost,
+                }
+
+                return jsonify(user_data), 200
+            else:
+                return "사용자 정보를 찾을 수 없습니다.", 404
+
+    return "잘못된 요청 메서드", 405
+
+
+
+
+"""import io
 import os
 from torchvision import models
 from PIL import Image as im
@@ -150,4 +181,4 @@ def yolo():
         if "onlyHelmet" in str(result):
             return "헬멧만 있음", 202
 
-    return '헬멧 감지 실패', 404
+    return '헬멧 감지 실패', 404"""

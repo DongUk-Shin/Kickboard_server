@@ -110,3 +110,27 @@ def saveRideRogTest():
         return redirect(url_for('html_views.main'))
     return render_template('saveriderog.html', email=email)
 
+
+#개인정보 페이지 개인정보return
+@bp.route('userinfoTest/')
+def userinfoTest():
+    if 'session_user' in session:
+        user_email = session['session_user']
+        user_info = information.query.filter_by(email=user_email).first() 
+        user_log = RideLog.query.filter_by(email=user_email).first()  
+
+        if user_info and user_log:  
+            user_data = {
+                'email': user_info.email,
+                'name': user_info.name,
+                'phone_number': user_info.phone_number,
+                'date': user_log.date,
+                'distance': user_log.distance,
+                'runtime': user_log.runtime,
+                'cost': user_log.cost,
+            }
+            return render_template('userinfo.html', user_data=user_data)
+        else: 
+            return "유저 정보 로드 실패", 406
+    else:
+        return "유저 정보 로드 실패", 405
