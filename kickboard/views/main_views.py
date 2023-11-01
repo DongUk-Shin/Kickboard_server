@@ -179,7 +179,7 @@ def sendAccident():
 
     return result
 
-"""import io
+import io
 import os
 from torchvision import models
 from PIL import Image as im
@@ -202,14 +202,20 @@ def yolo():
         im = Image.open(io.BytesIO(im_bytes))
 
         result = model(im)
-        
-        print(result)
-        
-        
         if "HelmetFace" in str(result):
-            return "헬멧 감지 성공", 201
-        
+            
+            for pred in result.pred:
+                class_id = pred[:,-1].numpy()
+                conf = pred[:,4].numpy()
+                for i in range(len(class_id)):
+                    if int(class_id[i]) != 1:
+                        continue
+                    #class id = 1 이면 헬멧임
+                    print(f"Class ID: {int(class_id[i])}, Confidence: {conf[i]}")
+                    if float(conf[i]) > 0.8:
+                        return "헬멧 감지 성공", 201
+                    
         if "onlyHelmet" in str(result):
             return "헬멧만 있음", 202
 
-    return '헬멧 감지 실패', 404"""
+    return '헬멧 감지 실패', 405
