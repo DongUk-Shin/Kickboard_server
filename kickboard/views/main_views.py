@@ -171,15 +171,13 @@ def saveAccident():
 #전체 사고 기록 반환
 @bp.route('sendaccident/', methods=['POST'])
 def sendAccident():
-    result = ""
     accidents = Accident.query.all()
 
-    for accident in accidents:
-        result += f"{accident.id} {accident.date} {accident.latitude} {accident.longitude} {accident.count}"
+    accident_list = [{'id': accident.id, 'date': accident.date, 'latitude':accident.latitude, 'longitude':accident.longitude, 'count':accident.count} for accident in accidents]
 
-    return result
+    return accident_list
 
-import io
+"""import io
 import os
 from torchvision import models
 from PIL import Image as im
@@ -218,4 +216,4 @@ def yolo():
         if "onlyHelmet" in str(result):
             return "헬멧만 있음", 202
 
-    return '헬멧 감지 실패', 405
+    return '헬멧 감지 실패', 405"""
