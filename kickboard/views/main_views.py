@@ -171,7 +171,7 @@ def saveAccident():
 #전체 사고 기록 반환
 @bp.route('sendaccident/', methods=['POST'])
 def sendAccident():
-    accidents = Accident.query.all()
+    accidents = Accident.query.filter(Accident.count >= 5).all()
 
     accident_list = [{'id': accident.id, 'date': accident.date, 'latitude':accident.latitude, 'longitude':accident.longitude, 'count':accident.count} for accident in accidents]
 
