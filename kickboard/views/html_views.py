@@ -1,5 +1,4 @@
-from flask import Blueprint, current_app
-from flask import redirect, render_template, request, url_for, session, jsonify
+from flask import redirect, render_template, request, url_for, session, Blueprint, current_app
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 from kickboard import db

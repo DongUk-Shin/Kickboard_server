@@ -1,5 +1,4 @@
-from flask import Blueprint, current_app
-from flask import redirect, render_template, request, url_for, session, jsonify
+from flask import request, session, jsonify, Blueprint, current_app
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 from kickboard import db
@@ -58,8 +57,9 @@ def signin():
             session.clear()
             name = user.name
             session['session_user'] = user.email #세션에 id 저장
+            phone = user.phone
             
-            return name, 200
+            return (name,phone), 200
         else:
             return "비밀번호가 일치하지 않습니다" ,401
 
