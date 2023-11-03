@@ -57,9 +57,9 @@ def signin():
             session.clear()
             name = user.name
             session['session_user'] = user.email #세션에 id 저장
-            phone = user.phone
+            phone = user.phone_number
             
-            return (name,phone), 200
+            return name+','+phone, 200
         else:
             return "비밀번호가 일치하지 않습니다" ,401
 
@@ -116,9 +116,9 @@ def start():
             return 'X', 202
         else:
             if initial_start_data['start'] == 'O':
-                return 'O', 201
+                return 'O', 203
             else:
-                return 'X', 202
+                return 'X', 203
     return "start가 안옴", 404
 
 #개인정보 페이지 개인정보return
