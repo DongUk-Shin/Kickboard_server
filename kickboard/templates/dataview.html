@@ -57,5 +57,27 @@
             {% endfor %}
         </tbody>
     </table>
+    <table>
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>date</th>
+                <th>latitude</th>
+                <th>longitude</th>
+                <th>count</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in accident %}
+                <tr>
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.date }}</td>
+                    <td>{{ item.latitude }}</td>
+                    <td>{{ item.longitude }}</td>
+                    <td>{{ item.count }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </body>
 </html>

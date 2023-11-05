@@ -70,7 +70,8 @@ def logoutTest():
 def dataviewTest():
     info = information.query.all()
     ridelog = RideLog.query.all()
-    return render_template('dataview.html', info=info, ridelog=ridelog)
+    accident = Accident.query.all()
+    return render_template('dataview.html', info=info, ridelog=ridelog, accident= accident)
 
 # 이미지 받기
 @bp.route('imageTest/', methods=['GET', 'POST'])
