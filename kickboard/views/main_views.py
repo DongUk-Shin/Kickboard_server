@@ -191,7 +191,7 @@ def sendAccident():
 
     return accident_list
 
-"""import io
+import io
 import os
 from torchvision import models
 from PIL import Image as im
@@ -230,4 +230,4 @@ def yolo():
         if "onlyHelmet" in str(result):
             return "헬멧만 있음", 202
 
-    return '헬멧 감지 실패', 405"""
+    return '헬멧 감지 실패', 405
