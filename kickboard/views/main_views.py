@@ -158,7 +158,6 @@ def saveAccident():
         if not accident_data: 
             return "데이터가 올바르지 않습니다", 400
 
-        date =  accident_data.get('date')
         latitude =  accident_data.get('latitude')
         longitude =  accident_data.get('longitude')
 
@@ -175,7 +174,7 @@ def saveAccident():
             accident.count += 1
 
         if not similar_accidents:
-            accident = Accident(date=date, latitude=latitude, longitude=longitude, count=1)
+            accident = Accident(latitude=latitude, longitude=longitude, count=1)
             db.session.add(accident)
 
         db.session.commit()
@@ -191,7 +190,7 @@ def sendAccident():
 
     return accident_list
 
-import io
+"""import io
 import os
 from torchvision import models
 from PIL import Image as im
@@ -230,4 +229,4 @@ def yolo():
         if "onlyHelmet" in str(result):
             return "헬멧만 있음", 202
 
-    return '헬멧 감지 실패', 405
+    return '헬멧 감지 실패', 405"""
