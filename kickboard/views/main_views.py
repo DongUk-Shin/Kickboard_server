@@ -3,6 +3,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 from kickboard import db
 from kickboard.models import information, RideLog, Accident
+from sqlalchemy import and_
 
 import os
 
@@ -160,10 +161,23 @@ def saveAccident():
         date =  accident_data.get('date')
         latitude =  accident_data.get('latitude')
         longitude =  accident_data.get('longitude')
-        count = accident_data.get('count')
 
-        accident = Accident(date=date, latitude=latitude, longitude=longitude, count=count)
-        db.session.add(accident)
+        similar_accidents = Accident.query.filter(
+            and_(
+                Accident.latitude >= latitude - 0.0002,
+                Accident.latitude <= latitude + 0.0002,
+                Accident.longitude >= longitude - 0.0002,
+                Accident.longitude <= longitude + 0.0002
+            )
+        ).all()
+
+        for accident in similar_accidents:
+            accident.count += 1
+
+        if not similar_accidents:
+            accident = Accident(date=date, latitude=latitude, longitude=longitude, count=1)
+            db.session.add(accident)
+
         db.session.commit()
 
         return "서버 저장 성공" , 201
@@ -181,7 +195,7 @@ import io
 import os
 from torchvision import models
 from PIL import Image as im
-import torch.nn as nn
+import torch.nn as nngit 
 from torchvision import transforms
 import torch
 from PIL import Image
