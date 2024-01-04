@@ -22,7 +22,7 @@
 </blockquote>
 <p data-ke-size="size16" style="text-align: left;"> </p></div>
 
-##사용 방법
+## 사용 방법
 플라스크 환경변수
 set FLASK_APP=kickboard
 
